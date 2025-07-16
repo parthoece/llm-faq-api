@@ -2,7 +2,7 @@
 
 This project uses FastAPI + MongoDB + StackOverflow live data + Ollama-based LLaMA model.
 
-## 🚀 Usage (on GitHub Codespaces or locally)
+##  Usage (on GitHub Codespaces or locally)
 
 ### Setup
 
