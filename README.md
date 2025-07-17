@@ -12,8 +12,11 @@ This project creates a RESTful API that can answer user questions using a locall
 - **Ollama Integration**: Local LLM inference using the popular Ollama platform
 - **Stack Overflow Integration**: Capability to search and integrate Stack Overflow data for enhanced answers
 - **Containerized Development**: Full dev container support for GitHub Codespaces and local development
+- **Production Ready**: Complete CI/CD pipeline with GitHub Actions, Kubernetes deployment, and AWS infrastructure
+- **Auto-scaling**: Horizontal pod autoscaling based on CPU and memory usage
 - **Health Monitoring**: Built-in health check endpoints for monitoring service status
 - **CORS Support**: Cross-origin resource sharing enabled for web applications
+- **Security**: Container security, network policies, and secrets management
 
 ### Architecture
 
@@ -28,6 +31,23 @@ This project creates a RESTful API that can answer user questions using a locall
                        │ Stack Overflow  │
                        │  API (Optional) │
                        └─────────────────┘
+```
+
+#### Production Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   GitHub        │───▶│   AWS ECR       │───▶│   EKS Cluster   │
+│   Repository    │    │   Container     │    │   (Production)  │
+│   (CI/CD)       │    │   Registry      │    │   Auto-scaling  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   GitHub        │    │   Terraform    │    │   Load Balancer │
+│   Actions       │    │   (AWS EKS,     │    │   (ALB + SSL)   │
+│   Workflows     │    │   VPC, ECR)     │    │   Health Checks │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## Quick Start
@@ -97,10 +117,30 @@ This project creates a RESTful API that can answer user questions using a locall
    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
 
-5. **Verify the setup**:
-   ```bash
-   python test_api.py
+### Option 3: Production Deployment on AWS
+
+For production deployment with full CI/CD pipeline:
+
+1. **Fork the repository** and configure AWS credentials
+2. **Set up GitHub Secrets**:
    ```
+   AWS_ACCESS_KEY_ID
+   AWS_SECRET_ACCESS_KEY
+   ```
+3. **Deploy infrastructure**:
+   ```bash
+   # Clone your fork
+   git clone https://github.com/yourusername/llm-faq-api.git
+   cd llm-faq-api
+   
+   # Deploy everything (infrastructure + application)
+   ./deploy.sh
+   ```
+4. **Access the application**:
+   - Production: `https://api.llm-faq.yourdomain.com`
+   - Staging: `https://staging-api.llm-faq.yourdomain.com`
+
+**See [DEPLOYMENT.md](DEPLOYMENT.md) for complete production setup guide.**
 
 ## API Documentation
 
@@ -175,6 +215,9 @@ llm-faq-api/
 │   ├── devcontainer.json      # Dev container configuration
 │   ├── setup.sh              # Automated setup script
 │   └── profile.sh            # Shell profile setup
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml         # GitHub Actions CI/CD pipeline
 ├── .vscode/
 │   └── settings.json         # VS Code workspace settings
 ├── app/
@@ -182,9 +225,21 @@ llm-faq-api/
 │   ├── main.py              # FastAPI application
 │   ├── llm.py               # LLM integration logic
 │   └── stackoverflow.py     # Stack Overflow API client
+├── k8s/
+│   ├── production/          # Production Kubernetes manifests
+│   └── staging/             # Staging Kubernetes manifests
+├── terraform/               # AWS infrastructure as code
+│   ├── main.tf             # Main Terraform configuration
+│   ├── eks.tf              # EKS cluster configuration
+│   ├── variables.tf        # Input variables
+│   └── outputs.tf          # Output values
 ├── requirements.txt          # Python dependencies
 ├── test_api.py              # Comprehensive test suite
+├── deploy.sh                # Automated deployment script
+├── Dockerfile.prod          # Production Docker configuration
+├── docker-entrypoint.sh     # Container startup script
 ├── .env.example             # Environment variables template
+├── DEPLOYMENT.md            # Production deployment guide
 └── README.md                # This file
 ```
 

@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-faq-api-service
+  namespace: staging
+  labels:
+    app: llm-faq-api
+    environment: staging
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: llm-faq-api
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: llm-faq-api-ingress
+  namespace: staging
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+spec:
+  rules:
+  - host: staging-api.llm-faq.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: llm-faq-api-service
+            port:
+              number: 80

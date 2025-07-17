@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llm-faq-api-config
+  namespace: production
+data:
+  OLLAMA_HOST: "http://localhost:11434"
+  OLLAMA_MODEL: "llama3.2:1b"
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "INFO"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: llm-faq-api-secrets
+  namespace: production
+type: Opaque
+data:
+  # Base64 encoded secrets (update these with actual values)
+  STACKOVERFLOW_API_KEY: ""  # echo -n "your-key" | base64
