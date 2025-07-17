@@ -1,0 +1,7 @@
+{
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "dev.containers.defaultExtensions": [
+    "ms-vscode-remote.remote-containers"
+  ]
+}
